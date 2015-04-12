@@ -41,8 +41,6 @@ int main(int argc, char** argv) {
   memset(&fs, 0, sizeof(fs));
   int ec = fstat(fd, &fs);
   if (ec < 0) {
-    print_int(ec);
-    print("\n", 1);
     close(fd);
     return 3;
   }

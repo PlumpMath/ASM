@@ -23,15 +23,15 @@ malloc:
   call  heap_resize           ; eax = heap_resize(ebx);
   add   esp, 4
   cmp   eax, 0                ; if (eax < 0)
-  jl    abort                 ;   goto abort;
+  jl    __malloc_abort        ;   goto abort;
   mov   [heap_size], ebx      ; heap_size = ebx;
   add   ebx, [heap_ptr]       ; ebx += heap_ptr;
   mov   eax, [heap_pos]       ; eax = heap_pos;
   mov   [heap_pos], ebx       ; heap_pos = ebx;
-  jmp   return                ; return eax
-abort:
+  jmp   __malloc_return       ; return eax
+__malloc_abort:
   xor   eax, eax              ; return 0
-return:
+__malloc_return:
   pop   ebx
   ret
 
@@ -42,19 +42,36 @@ free:
   ret
 
 ; void memset(void* ptr, int c, size_t size);
-;global memset
-;memset:
-;  push  ebp
-;  mov   ebp, esp
-;  sub   esp, 0x10
-;
-;  mov   edx, [ebp + 0x08]
-;  mov   ecx, [ebp + 0x0c]
-;  mov   eax, [ebp + 0x10]
-;  TODO: Finish this.
-;
-;  pop   ebp
-;  ret
+global memset
+memset:
+  push  ebp
+  mov   ebp, esp
+  sub   esp, 0x10
+  mov   eax, dword [ebp + 0x10]
+  mov   ecx, dword [ebp + 0x0c]
+  mov   edx, dword [ebp + 0x08]
+  mov   dword [ebp - 0x04], edx
+  mov   dword [ebp - 0x08], ecx
+  mov   dword [ebp - 0x0c], eax
+  mov   dword [ebp - 0x10], 0x0
+__memset_loop:
+  mov   eax, dword [ebp - 0x10]
+  cmp   eax, dword [ebp - 0x0c]
+  jae   __memset_return
+  mov   eax, dword [ebp - 0x08]
+  mov   cl, al
+  mov   eax, dword [ebp - 0x10]
+  mov   edx, dword [ebp - 0x04]
+  mov   byte [edx + eax * 1], cl
+  mov   eax, dword [ebp - 0x10]
+  add   eax, 0x01
+  mov   dword [ebp - 0x10], eax
+  jmp   __memset_loop
+__memset_return:
+  add   esp, 0x10
+  pop   ebp
+  ret
+
 
 ; int heap_resize(size_t size);
 heap_resize:

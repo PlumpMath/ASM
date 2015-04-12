@@ -59,27 +59,13 @@ write:
   pop   ebx
   ret
 
-; struct stat {
-;   unsigned short st_dev;    // ID of device containing file
-;   unsigned short st_ino;    // inode number
-;   unsigned short st_mode;   // protection
-;   unsigned short st_nlink;  // number of hard links
-;   unsigned short st_uid;    // user ID of owner
-;   unsigned short st_gid;    // group ID of owner
-;   unsigned short st_rdev;   // device ID (if special file)
-;   size_t         st_size;   // total size, in bytes
-;   unsigned long  st_atime;  // time of last access
-;   unsigned long  st_mtime;  // time of last modification
-;   unsigned long  st_ctime;  // time of last status change
-; };
-
 ; int fstat(int fd, struct stat* buf);
 global fstat
 fstat:
   push  ebx
   mov   ebx, [esp + 0x08]
   mov   ecx, [esp + 0x0c]
-  mov   eax, 28
+  mov   eax, 108
   int   0x80
   pop   ebx
   ret

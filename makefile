@@ -6,10 +6,8 @@ CFLAGS_32 = -march=i386 -m32 -Wno-incompatible-library-redeclaration
 LFLAGS_32 = -m elf_i386
 NFLAGS_32 = -f elf32
 
-#CFLAGS = $(CFLAGS_$(ARCH)) -Os
-#LFLAGS = $(LFLAGS_$(ARCH)) -s
-CFLAGS = $(CFLAGS_$(ARCH)) -O0 -g
-LFLAGS = $(LFLAGS_$(ARCH))
+CFLAGS = $(CFLAGS_$(ARCH)) -Os
+LFLAGS = $(LFLAGS_$(ARCH)) -s
 NFLAGS = $(NFLAGS_$(ARCH))
 
 ASM_32 = x86
